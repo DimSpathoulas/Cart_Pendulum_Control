@@ -1,5 +1,5 @@
 # Inverted Pendulum Controller
-This serves as a basis for future work.
+This serves as a basis for future work. Serves as proof of concept.
 
 ## Overview
 A cpp implementation for the classic inverted pendulum on a cart control problem. 
