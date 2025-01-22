@@ -107,7 +107,7 @@ void dynamics_rk4(State *x_next, const State *x_current, double u) {
 }
 
              
-const double K[4] = {1., 30.75724192, 1.97285529, 6.54360696};  // Pre-computed LQR gains
+const double K[4] = {-1.0, -30.75724192, -1.97285529, -6.54360696};  // Pre-computed LQR gains
 // const double K[4] = {-10.0, -62.63178311, -9.9032684, -13.32610631};
 double calc_input_u(const State *current, const State *desired) {
     // Compute state errors
@@ -141,12 +141,12 @@ int main() {
     
     // Initialize states
     x[0].x = 0;
-    x[0].theta = M_PI - 0.95;  // initial deviation
+    x[0].theta =  0.95;  // initial deviation
     x[0].x_dot = 0;
     x[0].theta_dot = 0;
     
     // Desired final state
-    State x_desired = {0, M_PI, 0, 0};  
+    State x_desired = {0, 0, 0, 0};  
     
     printf("%s\n", "Control of a simple pendulum using RK4 and LQR");
 
