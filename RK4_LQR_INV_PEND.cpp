@@ -14,7 +14,7 @@
 #define N 1000   // number of steps
 
 // Control constraints
-#define U_MAX 50.0 
+#define U_MAX 20.0 
 #define x_max 8.0
 #define x_dot_max 4.0
 #define theta_dot_max M_PI/2.0
@@ -141,7 +141,7 @@ int main() {
     
     // Initialize states
     x[0].x = 0;
-    x[0].theta = M_PI - 0.25;  // initial deviation
+    x[0].theta = M_PI - 0.95;  // initial deviation
     x[0].x_dot = 0;
     x[0].theta_dot = 0;
     
