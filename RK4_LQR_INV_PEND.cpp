@@ -11,17 +11,13 @@
 // Simulation Parameters
 #define h 0.01    // time step (s)
 #define T 10.0   // total time (s)
-#define N 1000    // number of steps
-
-// Cost function weights
-#define W_u 0.1    // weight for control cost
-#define W_x 10.0  // weight for state cost
+#define N 1000   // number of steps
 
 // Control constraints
-#define U_MAX 20.0 
-#define x_max 4.0
-#define x_dot_max 2.0
-#define theta_dot_max M_PI/4.0
+#define U_MAX 50.0 
+#define x_max 8.0
+#define x_dot_max 4.0
+#define theta_dot_max M_PI/2.0
 
 // State structure
 typedef struct {
@@ -41,7 +37,7 @@ void compute_accelerations(const State *x_current, double u, double *x_ddot, dou
     *x_ddot = (u + m * l * x_current->theta_dot * x_current->theta_dot * sin_theta 
                - m * g * sin_theta * cos_theta) / den;
 
-    // Pendulum acceleration
+    // pendulum acceleration
     *theta_ddot = (-u * cos_theta - m * l * x_current->theta_dot * x_current->theta_dot * sin_theta * cos_theta 
                    + (M + m) * g * sin_theta) / (l * den);
 }
@@ -110,16 +106,18 @@ void dynamics_rk4(State *x_next, const State *x_current, double u) {
     x_next->theta_dot = fmax(-theta_dot_max, fmin(x_next->theta_dot, theta_dot_max)); // Angular velocity limit
 }
 
-
-const double K[4] = {-10.0, -59.66817868, -10.471278, -13.43125848};  // Pre-computed LQR gains
-
+             
+const double K[4] = {1., 30.75724192, 1.97285529, 6.54360696};  // Pre-computed LQR gains
+// const double K[4] = {-10.0, -62.63178311, -9.9032684, -13.32610631};
 double calc_input_u(const State *current, const State *desired) {
     // Compute state errors
     double x_error = current->x - desired->x;
+
     double theta_error = current->theta - desired->theta;
-    
     // Normalize angle error to [-pi, pi]
     theta_error = atan2(sin(theta_error), cos(theta_error));
+
+    // double theta_error = atan2(sin(current->theta - M_PI), cos(desired->theta - M_PI));
     
     double x_dot_error = current->x_dot - desired->x_dot;
     double theta_dot_error = current->theta_dot - desired->theta_dot;
@@ -132,6 +130,7 @@ double calc_input_u(const State *current, const State *desired) {
     
     // Saturate control input
     return fmax(-U_MAX, fmin(U_MAX, u));
+    // return 0.0;
 }
 
 
@@ -142,12 +141,12 @@ int main() {
     
     // Initialize states
     x[0].x = 0;
-    x[0].theta = 0.60;  // initial deviation
+    x[0].theta = M_PI - 0.25;  // initial deviation
     x[0].x_dot = 0;
     x[0].theta_dot = 0;
     
-    // Desired final state (upright equilibrium)
-    State x_desired = {0, 0, 0, 0};  // upright position is at theta = 0
+    // Desired final state
+    State x_desired = {0, M_PI, 0, 0};  
     
     printf("%s\n", "Control of a simple pendulum using RK4 and LQR");
 
