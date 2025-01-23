@@ -146,7 +146,7 @@ int main() {
     x[0].theta_dot = 0;
     
     // Desired final state
-    State x_desired = {0, 0, 0, 0};  
+    State x_desired = {0.3, 0, 0, 0};  
     
     printf("%s\n", "Control of a simple pendulum using RK4 and LQR");
 
